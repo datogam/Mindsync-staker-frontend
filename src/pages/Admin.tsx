@@ -10,6 +10,7 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 
 import { useWallet } from 'contexts/wallet';
 import { useContracts } from 'contexts/contracts';
@@ -34,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Admin() {
   const classes = useStyles();
   const { stakingRewardsContract, token0Contract } = useContracts();
-  const { network, address } = useWallet();
+  const { startConnecting: startConnectingWallet, address } = useWallet();
   const [aprmai, setAprmai] = useState('');
   const [apreth, setApreth] = useState('');
   const [starttime, setStarttime] = useState('');
@@ -137,101 +138,131 @@ export default function Admin() {
 
   return (
     <Paper>
-      <Box className='flex items-center'>
-        <FormControl
-          className={clsx(
-            classes.margin,
-            classes.withoutLabel,
-            classes.textField
-          )}
-        >
-          <InputLabel htmlFor='apr-mai'>APRmai</InputLabel>
-          <Input
-            id='apr-mai'
-            endAdornment={<InputAdornment position='end'>%</InputAdornment>}
-            onChange={(e) => setAprmai(e.target.value)}
-          />
-        </FormControl>
-        <FormControl
-          className={clsx(
-            classes.margin,
-            classes.withoutLabel,
-            classes.textField
-          )}
-        >
-          <InputLabel htmlFor='apr-eth'>APReth</InputLabel>
-          <Input
-            id='apr-eth'
-            endAdornment={<InputAdornment position='end'>%</InputAdornment>}
-            onChange={(e) => setApreth(e.target.value)}
-          />
-        </FormControl>
-      </Box>
-      <Box className='flex items-center'>
-        <FormControl
-          className={clsx(
-            classes.margin,
-            classes.withoutLabel,
-            classes.textField
-          )}
-        >
-          <TextField
-            id='start-time'
-            label='Start time'
-            type='datetime-local'
-            className={classes.textField}
-            onChange={(e) => setStarttime(e.target.value)}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-        </FormControl>
-        <FormControl
-          className={clsx(
-            classes.margin,
-            classes.withoutLabel,
-            classes.textField
-          )}
-        >
-          <TextField
-            id='end-time'
-            label='End time'
-            type='datetime-local'
-            className={classes.textField}
-            onChange={(e) => setEndtime(e.target.value)}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-        </FormControl>
-      </Box>
-      <Box className='flex items-center'>
-        <FormControl
-          className={clsx(
-            classes.margin,
-            classes.withoutLabel,
-            classes.textField
-          )}
-        >
-          <InputLabel htmlFor='total-reward'>Total Reward</InputLabel>
-          <Input
-            id='total-reward'
-            endAdornment={<InputAdornment position='end'>MAI</InputAdornment>}
-            onChange={(e) => setTotalReward(e.target.value)}
-          />
-        </FormControl>
-      </Box>
-      <Box m={2} mt={3} className='item-center'>
-        <Button
-          variant='contained'
-          color='secondary'
-          onClick={create_incentive}
-          disabled={isCreatedIncentive === true}
-        >
-          {isCreatedIncentive === false
-            ? 'Create Incentive'
-            : 'Creating Incentive...'}
-        </Button>
+      <Box p={5}>
+        {!address ? (
+          <>
+            <Box>
+              <Typography variant='h5'>
+                You are about to earn rewards by staking MAI tokens on Ethereum!
+              </Typography>
+            </Box>
+
+            <Box mt={2}>
+              <Button
+                color='secondary'
+                variant='contained'
+                onClick={startConnectingWallet}
+              >
+                Connect Wallet
+              </Button>
+            </Box>
+          </>
+        ) : (
+          <>
+            <Box className='flex items-center'>
+              <FormControl
+                className={clsx(
+                  classes.margin,
+                  classes.withoutLabel,
+                  classes.textField
+                )}
+              >
+                <InputLabel htmlFor='apr-mai'>APRmai</InputLabel>
+                <Input
+                  id='apr-mai'
+                  endAdornment={
+                    <InputAdornment position='end'>%</InputAdornment>
+                  }
+                  onChange={(e) => setAprmai(e.target.value)}
+                />
+              </FormControl>
+              <FormControl
+                className={clsx(
+                  classes.margin,
+                  classes.withoutLabel,
+                  classes.textField
+                )}
+              >
+                <InputLabel htmlFor='apr-eth'>APReth</InputLabel>
+                <Input
+                  id='apr-eth'
+                  endAdornment={
+                    <InputAdornment position='end'>%</InputAdornment>
+                  }
+                  onChange={(e) => setApreth(e.target.value)}
+                />
+              </FormControl>
+            </Box>
+            <Box className='flex items-center'>
+              <FormControl
+                className={clsx(
+                  classes.margin,
+                  classes.withoutLabel,
+                  classes.textField
+                )}
+              >
+                <TextField
+                  id='start-time'
+                  label='Start time'
+                  type='datetime-local'
+                  className={classes.textField}
+                  onChange={(e) => setStarttime(e.target.value)}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+              </FormControl>
+              <FormControl
+                className={clsx(
+                  classes.margin,
+                  classes.withoutLabel,
+                  classes.textField
+                )}
+              >
+                <TextField
+                  id='end-time'
+                  label='End time'
+                  type='datetime-local'
+                  className={classes.textField}
+                  onChange={(e) => setEndtime(e.target.value)}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+              </FormControl>
+            </Box>
+            <Box className='flex items-center'>
+              <FormControl
+                className={clsx(
+                  classes.margin,
+                  classes.withoutLabel,
+                  classes.textField
+                )}
+              >
+                <InputLabel htmlFor='total-reward'>Total Reward</InputLabel>
+                <Input
+                  id='total-reward'
+                  endAdornment={
+                    <InputAdornment position='end'>MAI</InputAdornment>
+                  }
+                  onChange={(e) => setTotalReward(e.target.value)}
+                />
+              </FormControl>
+            </Box>
+            <Box m={2} mt={3} className='item-center'>
+              <Button
+                variant='contained'
+                color='secondary'
+                onClick={create_incentive}
+                disabled={isCreatedIncentive === true}
+              >
+                {isCreatedIncentive === false
+                  ? 'Create Incentive'
+                  : 'Creating Incentive...'}
+              </Button>
+            </Box>
+          </>
+        )}
       </Box>
     </Paper>
   );
